@@ -1,0 +1,8 @@
+{% extends 'base.html' %}{% block content %}<div class="page-heading"><div><p class="eyebrow">{{ business.name }}</p><h1>Dashboard</h1></div><a class="button" href="{% url 'invoices:upload' business.pk %}">＋ Upload invoice</a></div>
+{% if can_admin %}<p><span class="badge badge-admin">Administrator</span> Review submitted invoices, approve them or return them for correction.</p>
+{% else %}<p><span class="badge">Employee</span> Upload invoices and track only your own submissions.</p>{% endif %}
+<p><a href="{% url 'profile' %}">Your profile and role permissions</a></p>
+{% if pending_uploads %}<section class="panel"><h2>Uploads awaiting your confirmation</h2><p>These temporary uploads are not saved invoices.</p><ul>{% for pending in pending_uploads %}<li><a href="{{ pending.get_absolute_url }}">{{ pending.original_filename }}</a></li>{% endfor %}</ul></section>{% endif %}
+<div class="cards">{% for label,count in counts %}<section class="panel"><h2>{{ label }}</h2><p class="count">{{ count }}</p></section>{% endfor %}</div>
+{% if can_admin %}<h2>Awaiting review</h2><p><span class="sr-only">Awaiting your review. </span><a href="{% url 'invoices:list' business.pk %}?status=submitted">Open review queue</a> · <a href="{% url 'invoices:export' business.pk %}">Export approved invoices</a></p>{% include 'invoices/tiles.html' with records=pending_review review_queue=True %}{% endif %}
+<h2>{% if can_admin %}Recent invoices{% else %}Your submitted invoices{% endif %}</h2>{% include 'invoices/tiles.html' with records=recent %}{% endblock %}

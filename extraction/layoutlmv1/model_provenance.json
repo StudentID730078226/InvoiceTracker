@@ -1,0 +1,25 @@
+{
+  "model": "microsoft/layoutlm-base-uncased",
+  "base_revision": "30e3cdd39c11f09757b0fcf7598533d05052acef",
+  "configuration": "A_baseline",
+  "seed": 42,
+  "epoch": 10,
+  "training_documents": 1500,
+  "development_documents": 400,
+  "development_mean_core_exact": 0.95375,
+  "selection": "configuration selected on two-seed development mean; seed selected on development mean only",
+  "source_checkpoint": "C:\\Users\\lmears-ollerenshaw\\software\\ml_evaluation\\layoutlm_v1_sequential_tuning1500_v1\\runs\\A_baseline\\42\\best_checkpoint",
+  "token_overlap": 64,
+  "max_length": 512,
+  "encoder_lr": 1e-05,
+  "head_lr": 5e-05,
+  "weight_decay": 0.01,
+  "loss": "unweighted token cross entropy",
+  "trainer": "custom PyTorch training loop; AdamW; fp16 GradScaler",
+  "files": {
+    "config.json": "7f7c508dcb73b678e19ddcfec135a5635a6fef238ea8bb200f320120cbd1c051",
+    "model.safetensors": "62e8a2847e5c79bc4d2a9b9e247d1d30b39be42aa4eda87e2163dbe7f9ce91b2",
+    "tokenizer.json": "4e07c391e18cf168bd445e7195f6b2fbebd6ff12c183ac7c22d784e0247ee57e",
+    "tokenizer_config.json": "52f1e5ad62b9fd93f80fc89c5b663e15c76896fdd28652c0f99b1fb286201980"
+  }
+}

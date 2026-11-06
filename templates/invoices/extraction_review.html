@@ -1,0 +1,9 @@
+{% extends 'base.html' %}{% block content %}
+<h1>Review model suggestions</h1>
+<p>Scan #{{ run.pk }} used {{ run.model_version|default:"an earlier extraction model" }}. Check every value against the source document.</p>
+{% for warning in run.warnings %}<p class="message">{{ warning }}</p>{% endfor %}
+<section class="panel"><form method="post">{% csrf_token %}{{ form.as_p }}
+<p>Select the fields you have checked:</p>
+{% for name, value in run.suggestions.items %}<label><input type="checkbox" name="confirm_fields" value="{{ name }}"> Confirm {{ name|title }} ({{ value }})</label><br>{% endfor %}
+<button type="submit">Save selected checked fields</button></form></section>
+{% endblock %}

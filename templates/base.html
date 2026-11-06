@@ -1,0 +1,17 @@
+{% load static %}<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{% block title %}Invoice workspace{% endblock %}</title><link rel="stylesheet" href="{% static 'app.css' %}?v=20261104-2"></head>
+<body><a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+<a class="brand" href="{% if business %}{% url 'invoices:dashboard' business.pk %}{% else %}{% url 'business_select' %}{% endif %}"><span class="brand-mark" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 16h7"/></svg></span><span>Invoice Manager</span></a>
+{% if user.is_authenticated %}
+<a class="header-account" href="{% url 'profile' %}" aria-label="Your profile"><span class="account-avatar" aria-hidden="true">{{ user.username|first|upper }}</span><span class="account-copy"><strong>{{ user.username }}</strong><span>{{ business.name|default:'Your account' }}</span></span><svg class="account-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a>
+<details class="navigation-menu">
+<summary><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Menu</span></summary>
+<nav class="main-nav" aria-label="Main navigation">
+{% if business %}<a href="{% url 'invoices:dashboard' business.pk %}">Dashboard</a><a href="{% url 'invoices:list' business.pk %}">My invoices</a><a href="{% url 'invoices:upload' business.pk %}">Upload</a>{% if can_admin %}<a href="{% url 'invoices:review_queue' business.pk %}">Review queue</a><a href="{% url 'invoices:spending' business.pk %}">Expenditure</a><a href="{% url 'members' business.pk %}">Organisation users</a>{% endif %}{% else %}<a href="{% url 'business_select' %}">Workspace</a>{% endif %}
+<a href="{% url 'profile' %}">Account</a>
+{% if has_multiple_businesses %}<a href="{% url 'business_select' %}">Switch business</a>{% endif %}
+{% if user.is_superuser %}<a href="{% url 'admin:index' %}">Admin</a>{% endif %}
+</nav></details>{% endif %}</header>
+<script src="{% static 'navigation.js' %}?v=20261104-2" defer></script>
+<main id="main">{% for message in messages %}<p class="message" role="status">{{ message }}</p>{% endfor %}{% block content %}{% endblock %}</main><footer>Local invoice management · Scan suggestions and manual review</footer></body></html>

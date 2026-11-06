@@ -1,0 +1,15 @@
+<div class="invoice-tiles">
+{% for invoice in records %}
+<article class="invoice-tile">
+  <div class="tile-heading"><span class="eyebrow">{{ invoice.invoice_number|default:'Invoice number not entered' }}</span><span class="badge status-{{ invoice.status }}">{{ invoice.get_status_display }}</span></div>
+  <h2>{{ invoice.supplier|default:'Supplier not entered' }}</h2>
+  <dl class="tile-details">
+    <div><dt>Invoice date</dt><dd>{{ invoice.invoice_date|date:'d M Y'|default:'Not entered' }}</dd></div>
+    <div><dt>Total</dt><dd class="tile-total">{% if invoice.total is not None %}{{ invoice.currency }} {{ invoice.total }}{% else %}Not entered{% endif %}</dd></div>
+    {% if review_queue %}<div><dt>Submitted by</dt><dd>{{ invoice.uploaded_by.get_full_name|default:invoice.uploaded_by.username }}</dd></div><div><dt>Uploaded</dt><dd>{{ invoice.created_at|date:'d M Y' }}</dd></div>{% endif %}
+  </dl>
+  {% if invoice.status == 'returned' and invoice.return_reason %}<p class="tile-feedback"><strong>Reviewer feedback</strong><br>{{ invoice.return_reason }}</p>{% endif %}
+  <div class="tile-actions"><a class="button" href="{{ invoice.get_absolute_url }}" aria-label="{% if review_queue %}Review{% else %}View{% endif %} invoice {{ invoice.invoice_number|default:invoice.pk }}">{% if review_queue %}Review invoice{% elif invoice.status == 'returned' %}View and correct{% else %}View invoice{% endif %}</a>{% if invoice.editable %}<a class="tile-delete" href="{% url 'invoices:delete' business.pk invoice.pk %}" aria-label="Delete invoice {{ invoice.pk }}">Delete</a>{% endif %}</div>
+</article>
+{% empty %}<section class="panel tile-empty"><h2>{% if review_queue %}No invoices awaiting review{% else %}No invoices found{% endif %}</h2><p>{% if review_queue %}Submitted invoices will appear here when they are ready for review.{% else %}Try changing your filters, or upload your first invoice.{% endif %}</p></section>{% endfor %}
+</div>
