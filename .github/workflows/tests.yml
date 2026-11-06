@@ -2,6 +2,8 @@ name: Application tests
 
 on:
   pull_request:
+  # Check every pushed commit, including the final merge commit on main.
+  push:
 
 permissions:
   contents: read
