@@ -1,0 +1,20 @@
+{% extends 'base.html' %}{% block content %}
+<h1>Your profile</h1>
+<section class="panel narrow"><h2>Account</h2><dl><dt>Username</dt><dd>{{ user.username }}</dd><dt>Email</dt><dd>{{ user.email|default:'Not provided' }}</dd></dl>
+<div class="account-actions"><a class="button" href="{% url 'password_change' %}">Change password</a><form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="button button-secondary">Logout</button></form></div></section>
+<section class="panel"><h2>Your businesses and roles</h2>
+{% for workspace in workspaces %}<p><a href="{% url 'invoices:dashboard' workspace.business.pk %}">{{ workspace.business.name }}</a> <span class="badge">{{ workspace.role }}</span></p>{% empty %}<p>No business access is assigned. Contact your administrator.</p>{% endfor %}
+{% if workspaces|length == 1 %}<p>You have one business, so signing in takes you straight to its dashboard.</p>{% endif %}
+</section>
+<section class="panel"><h2>What each role can do</h2>
+<div class="table-wrap"><table><thead><tr><th>Action</th><th>Client</th><th>Approver (Accountant)</th></tr></thead><tbody>
+<tr><td>View invoices and documents in assigned businesses</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>Upload, enter details, edit and submit draft or returned invoices</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>Delete draft or returned invoices after confirmation</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>Approve submitted invoices or return them with a reason</td><td>No</td><td>Yes</td></tr>
+<tr><td>Export approved invoices</td><td>No</td><td>Yes</td></tr>
+</tbody></table></div>
+<p>Roles are assigned separately for each business. A single business still uses these same roles. An administrator assigns access; users cannot change their own role here. Administrators have access to every active business.</p>
+<p>Approvers can currently review invoices they uploaded themselves. Approval records acceptance, not payment.</p>
+<p>Submitted and approved invoices cannot be deleted. Returned invoices can be corrected and submitted again.</p></section>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}{% block content %}
+<h1>Enter invoice details</h1><p>{{ pending.original_filename }}</p>
+<p class="message">This is a temporary upload. No invoice has been saved. Enter and confirm the details below to create it.</p>
+<div class="detail-grid"><section class="panel"><h2>Uploaded invoice</h2>
+{% if pending.content_type != 'application/pdf' %}<img class="preview" src="{% url 'invoices:pending_media' business.pk pending.pk %}" alt="Uploaded invoice document">{% endif %}
+<p><a href="{% url 'invoices:pending_media' business.pk pending.pk %}?source=1">Download original document</a></p></section>
+<section class="panel"><h2>Confirm invoice details</h2><p>Enter the details from your document. Confirmation saves a draft invoice; accountant approval comes later.</p>
+<section class="message"><strong>Want help filling this in?</strong>
+<p>OCR and the LayoutLM v1 model can suggest values from this upload. Review and correct every value before saving.</p>
+<form method="post" action="{% url 'invoices:pending_extract' business.pk pending.pk %}">{% csrf_token %}<button type="submit" {% if pending.status == 'queued' or pending.status == 'running' %}disabled{% endif %}>Extract invoice details</button></form>
+{% if pending.status == 'queued' or pending.status == 'running' %}<p>Scan status: {{ pending.status }}. Reload this page shortly.</p>{% endif %}
+{% if pending.status == 'succeeded' %}<p>Scan complete. Suggested values have been placed in the form for you to review.</p>{% endif %}
+{% if pending.status == 'failed' %}<p>Scan failed: {{ pending.error }}</p>{% endif %}
+</section>
+<form method="post">{% csrf_token %}{{ form.as_p }}<button type="submit">Confirm details and save invoice</button></form></section></div>
+<form method="post" action="{% url 'invoices:pending_discard' business.pk pending.pk %}">{% csrf_token %}<button type="submit">Discard temporary upload</button></form>
+{% endblock %}

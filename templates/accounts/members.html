@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">{{ business.name }}</p><h1>Organisation users</h1></div></div>
+<div class="detail-grid">
+<section class="panel">
+  <h2>Add a user</h2>
+  <p>Create a login and assign it to this organisation. Share the temporary password securely and ask the user to change it after signing in.</p>
+  <form method="post" action="{% url 'add_member' business.pk %}">
+    {% csrf_token %}{{ form.as_p }}<button type="submit">Add user</button>
+  </form>
+</section>
+<section class="panel">
+  <h2>Current users</h2>
+  <div class="table-wrap"><table><thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Access</th></tr></thead><tbody>
+  {% for membership in memberships %}<tr><td>{{ membership.user.username }}</td><td>{{ membership.user.email|default:"—" }}</td><td>{% if membership.role == "admin" or membership.role == "accountant" %}Administrator{% else %}Employee{% endif %}</td><td>{% if membership.user_id == user.id %}<span class="muted">Current account</span>{% else %}<form method="post" action="{% url 'remove_member' business.pk membership.pk %}">{% csrf_token %}<button type="submit" class="button-danger" onclick="return confirm('Remove this user from the organisation?');">Remove</button></form>{% endif %}</td></tr>
+  {% empty %}<tr><td colspan="4">No users assigned.</td></tr>{% endfor %}
+  </tbody></table></div>
+</section>
+</div>
+{% endblock %}
