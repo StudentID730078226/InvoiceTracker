@@ -26,7 +26,7 @@ class LocalInvoiceExtractor:
             if self._ready:return
             import torch
             from doctr.models import ocr_predictor
-            from ml.layoutlmv1.field_model import load_trained_model
+            from extraction.layoutlmv1.field_model import load_trained_model
             torch.set_num_threads(2)
             self.device = os.environ.get("INVOICE_MODEL_DEVICE", "cuda").lower()
             if self.device not in {"cpu", "cuda"}:
@@ -56,9 +56,9 @@ class LocalInvoiceExtractor:
         the image pixels are supplied to OCR, not to the field model.
         """
         from PIL import Image
-        from ml.layoutlmv1.application_inference import finish, MODEL_VERSION
-        from ml.layoutlmv1.ocr import extract_text
-        from ml.layoutlmv1.runtime import predict_page, select_fields
+        from extraction.layoutlmv1.application_inference import finish, MODEL_VERSION
+        from extraction.layoutlmv1.ocr import extract_text
+        from extraction.layoutlmv1.runtime import predict_page, select_fields
         from invoices.document_evidence import retry_number_words
         if not isinstance(image, Image.Image):
             raise TypeError("extract_image expects a PIL image; file decoding is separate.")

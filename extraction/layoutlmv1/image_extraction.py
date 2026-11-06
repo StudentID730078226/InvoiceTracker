@@ -1,7 +1,7 @@
 """Small application entry point; OCR and field prediction live in the adapter."""
 from pathlib import Path
-from ml.layoutlmv1.local_extractor import LocalInvoiceExtractor
-from ml.layoutlmv1.image_enhancement import enhance_contrast
+from extraction.layoutlmv1.local_extractor import LocalInvoiceExtractor
+from extraction.layoutlmv1.image_enhancement import enhance_contrast
 
 
 def preprocess_image(image):

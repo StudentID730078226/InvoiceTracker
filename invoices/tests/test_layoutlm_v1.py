@@ -2,8 +2,8 @@
 from pathlib import Path
 from unittest import TestCase
 from django.conf import settings
-from ml.layoutlmv1.application_inference import MODEL_VERSION,finish
-from ml.layoutlmv1.runtime import select_fields
+from extraction.layoutlmv1.application_inference import MODEL_VERSION,finish
+from extraction.layoutlmv1.runtime import select_fields
 from django.test import TestCase as DjangoTestCase, override_settings
 from unittest.mock import patch
 import tempfile
@@ -14,15 +14,15 @@ def word(text,box):return {'text':text,'bbox':box,'page':0}
 class LayoutLMV1IntegrationTests(TestCase):
     def test_checkpoint_loader_verifies_then_delegates_to_matching_components(self):
         import hashlib
-        from ml.layoutlmv1.field_model import load_trained_model
+        from extraction.layoutlmv1.field_model import load_trained_model
         with tempfile.TemporaryDirectory() as folder:
             checkpoint=Path(folder);payload=b'fixture weights'
             (checkpoint/'weights.bin').write_bytes(payload)
             provenance={'files':{'weights.bin':hashlib.sha256(payload).hexdigest()}}
             tokenizer=object();model=object()
-            with patch('ml.layoutlmv1.field_model.json.loads',return_value=provenance), \
-                 patch('ml.layoutlmv1.field_model.load_invoice_tokenizer',return_value=tokenizer) as token_loader, \
-                 patch('ml.layoutlmv1.field_model.load_invoice_model',return_value=model) as model_loader:
+            with patch('extraction.layoutlmv1.field_model.json.loads',return_value=provenance), \
+                 patch('extraction.layoutlmv1.field_model.load_invoice_tokenizer',return_value=tokenizer) as token_loader, \
+                 patch('extraction.layoutlmv1.field_model.load_invoice_model',return_value=model) as model_loader:
                 self.assertEqual(load_trained_model(checkpoint,'cpu'),(tokenizer,model))
                 token_loader.assert_called_once_with(checkpoint)
                 model_loader.assert_called_once_with(checkpoint,'cpu')
@@ -33,12 +33,12 @@ class LayoutLMV1IntegrationTests(TestCase):
                 self.assertEqual(model_loader.call_count,1)
 
     def test_image_entry_point_passes_image_and_returns_adapter_result(self):
-        from ml.layoutlmv1.image_extraction import extract_image
+        from extraction.layoutlmv1.image_extraction import extract_image
         image=object()
         prepared=object()
         expected={'suggestions':{'supplier':'Example'}}
-        with patch('ml.layoutlmv1.image_extraction.lvm_model') as adapter, \
-             patch('ml.layoutlmv1.image_extraction.preprocess_image',return_value=prepared) as preprocessing:
+        with patch('extraction.layoutlmv1.image_extraction.lvm_model') as adapter, \
+             patch('extraction.layoutlmv1.image_extraction.preprocess_image',return_value=prepared) as preprocessing:
             adapter.extract.return_value=expected
             self.assertIs(extract_image(image),expected)
             preprocessing.assert_called_once_with(image)
@@ -47,7 +47,7 @@ class LayoutLMV1IntegrationTests(TestCase):
     def test_clahe_preserves_page_geometry_and_original_pixels(self):
         import numpy as np
         from PIL import Image
-        from ml.layoutlmv1.image_enhancement import enhance_contrast
+        from extraction.layoutlmv1.image_enhancement import enhance_contrast
         pixels=np.tile(np.linspace(110,140,64,dtype=np.uint8),(64,1))
         image=Image.fromarray(pixels)
         with patch.dict('os.environ',{'INVOICE_CONTRAST':'clahe'}):result=enhance_contrast(image)
@@ -58,14 +58,14 @@ class LayoutLMV1IntegrationTests(TestCase):
 
     def test_contrast_can_be_disabled_for_comparison(self):
         from PIL import Image
-        from ml.layoutlmv1.image_enhancement import enhance_contrast
+        from extraction.layoutlmv1.image_enhancement import enhance_contrast
         image=Image.new('RGB',(32,40),(120,130,140))
         with patch.dict('os.environ',{'INVOICE_CONTRAST':'none'}):result=enhance_contrast(image)
         self.assertEqual(result.tobytes(),image.tobytes())
 
     def test_ocr_returns_real_word_boxes_and_ignores_blank_tokens(self):
         from PIL import Image
-        from ml.layoutlmv1.ocr import extract_text
+        from extraction.layoutlmv1.ocr import extract_text
         fake=type('Output',(),{'export':lambda self:{'pages':[{'blocks':[{'lines':[{'words':[
             {'value':'Invoice','geometry':((.1,.2),(.3,.4)),'confidence':.9},
             {'value':' ','geometry':((0,0),(1,1)),'confidence':.1}]}]}]}]}})()
@@ -78,7 +78,7 @@ class LayoutLMV1IntegrationTests(TestCase):
         import tempfile
         from types import SimpleNamespace
         from PIL import Image
-        from ml.layoutlmv1.application_inference import main
+        from extraction.layoutlmv1.application_inference import main
         image=Image.new('RGB',(20,20),'white')
         def page(amount,score):
             return {'page_state':{'ocr_arm':'parseq','words':[{'text':amount,'bbox':[.1,.1,.2,.2]}],
@@ -86,9 +86,9 @@ class LayoutLMV1IntegrationTests(TestCase):
                 'tokens':[],'number_retry':{}}}
         with tempfile.TemporaryDirectory() as folder:
             source=Path(folder)/'source.png';image.save(source)
-            with patch('ml.layoutlmv1.application_inference.pages',return_value=[(image,0),(image,1)]), \
-                 patch('ml.layoutlmv1.image_extraction.extract_image',side_effect=[page('100.00',.4),page('200.00',.9)]) as extract, \
-                 patch('ml.layoutlmv1.image_extraction.lvm_model',SimpleNamespace(device='cpu',arm='combined')):
+            with patch('extraction.layoutlmv1.application_inference.pages',return_value=[(image,0),(image,1)]), \
+                 patch('extraction.layoutlmv1.image_extraction.extract_image',side_effect=[page('100.00',.4),page('200.00',.9)]) as extract, \
+                 patch('extraction.layoutlmv1.image_extraction.lvm_model',SimpleNamespace(device='cpu',arm='combined')):
                 result=main(source,Path(folder)/'result.json')
             self.assertEqual(extract.call_count,2)
             self.assertEqual(result['suggestions']['total'],'200.00')
@@ -96,7 +96,7 @@ class LayoutLMV1IntegrationTests(TestCase):
 
     def test_both_worker_routes_target_v1(self):
         source=(Path(settings.BASE_DIR)/'invoices/extraction.py').read_text(encoding='utf-8')
-        self.assertEqual(source.count('ml/layoutlmv1/application_inference.py'),2)
+        self.assertEqual(source.count('extraction/layoutlmv1/application_inference.py'),2)
         self.assertNotIn('ml/layoutlmv3/scripts/application_inference.py',source)
         self.assertIn('layoutlm-v1-',MODEL_VERSION)
 
@@ -132,7 +132,7 @@ class WorkerContractTests(DjangoTestCase):
             pending=stage_upload(user,business.pk,image_upload())
             pending.status='queued';pending.save(update_fields=['status'])
             def result(command,**kwargs):
-                self.assertTrue(str(command[1]).replace('\\','/').endswith('ml/layoutlmv1/application_inference.py'))
+                self.assertTrue(str(command[1]).replace('\\','/').endswith('extraction/layoutlmv1/application_inference.py'))
                 self.assertEqual(kwargs['timeout'],INFERENCE_TIMEOUT_SECONDS)
                 Path(command[-1]).write_text(json.dumps({'suggestions':{'supplier':'Example','invoice_number':'123',
                     'invoice_date':'05/27/18','total':'$170.00'},'model_version':MODEL_VERSION,'warnings':[]}))

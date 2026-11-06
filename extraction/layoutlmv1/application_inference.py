@@ -6,11 +6,11 @@ import sys
 import time
 ROOT=Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
-from ml.layoutlmv1.runtime import select_fields
-from ml.layoutlmv1.preprocessing import pages
-from ml.layoutlmv1.image_enhancement import contrast_settings
-from ml.layoutlmv1.total_selection import improve
-from ml.layoutlmv1.field_rules import _refine_fields,_ocr_fallbacks
+from extraction.layoutlmv1.runtime import select_fields
+from extraction.layoutlmv1.preprocessing import pages
+from extraction.layoutlmv1.image_enhancement import contrast_settings
+from extraction.layoutlmv1.total_selection import improve
+from extraction.layoutlmv1.field_rules import _refine_fields,_ocr_fallbacks
 from invoices.currency import apply_currency_evidence
 
 CHECKPOINT=ROOT/'models/layoutlm-v1-invoice'
@@ -18,12 +18,12 @@ MODEL_VERSION='layoutlm-v1-1500-A-seed42-epoch10-evidence2'
 
 def recognize(image, predictor):
     """Compatibility entry point; OCR implementation is separated in ocr.py."""
-    from ml.layoutlmv1.ocr import extract_text
+    from extraction.layoutlmv1.ocr import extract_text
     return extract_text(image, predictor)
 
 def load_model(device, checkpoint=CHECKPOINT):
     """Compatibility entry point for the verified field-model loader."""
-    from ml.layoutlmv1.field_model import load_trained_model
+    from extraction.layoutlmv1.field_model import load_trained_model
     return load_trained_model(checkpoint, device)
 
 def finish(raw,documents,words):
@@ -38,7 +38,7 @@ def finish(raw,documents,words):
 
 def main(source,destination):
     """Run page preparation, OCR, field inference and JSON export for one upload."""
-    from ml.layoutlmv1.image_extraction import extract_image, lvm_model
+    from extraction.layoutlmv1.image_extraction import extract_image, lvm_model
     began=time.monotonic()
     spans=[];documents=[];all_words=[];trace=[];selected_arms=[]
     # OCR sees pixels; LayoutLM v1 receives only the resulting words and boxes.

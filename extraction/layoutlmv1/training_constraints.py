@@ -3,7 +3,7 @@
 This module is prepared for subsequent training-code refactoring. Historical
 checkpoints and the currently running, hash-frozen study did not call it.
 """
-import tourch
+import torch
 from contextlib import contextmanager
 from dataclasses import dataclass
 

@@ -208,7 +208,7 @@ def process_run(run_id):
         result_path = Path(settings.MEDIA_ROOT) / "extraction_results" / f"{run.pk}.json"
         result_path.parent.mkdir(parents=True, exist_ok=True)
         worker = _worker_python()
-        script = settings.BASE_DIR / "ml/layoutlmv1/application_inference.py"
+        script = settings.BASE_DIR / "extraction/layoutlmv1/application_inference.py"
         subprocess.run(
             [str(worker), str(script), run.invoice.source_file.path, str(result_path)],
             cwd=settings.BASE_DIR, check=True, timeout=INFERENCE_TIMEOUT_SECONDS,
@@ -241,7 +241,7 @@ def process_pending_run(pending_id):
         result_path = Path(settings.MEDIA_ROOT) / "extraction_results" / f"pending-{pending.pk}.json"
         result_path.parent.mkdir(parents=True, exist_ok=True)
         worker = _worker_python()
-        script = settings.BASE_DIR / "ml/layoutlmv1/application_inference.py"
+        script = settings.BASE_DIR / "extraction/layoutlmv1/application_inference.py"
         subprocess.run(
             [str(worker), str(script), pending.source_file.path, str(result_path)],
             cwd=settings.BASE_DIR, check=True, timeout=INFERENCE_TIMEOUT_SECONDS,
