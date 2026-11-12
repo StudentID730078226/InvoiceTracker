@@ -1,4 +1,4 @@
-"""Local docTR OCR → LayoutLM v1 → reviewed field suggestions. No annotation access."""
+"""Local docTR OCR → LayoutLM v1 → reviewed field suggestions. No annotation access. Changes can be made."""
 import hashlib
 import json
 from pathlib import Path
