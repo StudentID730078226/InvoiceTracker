@@ -28,7 +28,7 @@ archive/ml_reset_2026-10-26/.tmp/
 
 archive/kaggle_source_withdrawn_2026-10-27/
 
-# Local reporting runtime and downloaded diagram tools
+# Local reporting runtime and downloaded diagram tools not needed.
 .tools/
 
 .venv-easyocr-gpu/

@@ -1,5 +1,6 @@
 # Dependencies for application tests, including mocked ML integration.
 # CPU PyTorch is installed separately by the workflow; no OCR weights are needed.
+# Local reporting runtime and downloaded diagram tools not needed.
 -r requirements.txt
 flake8==7.5.0
 numpy==2.3.5
