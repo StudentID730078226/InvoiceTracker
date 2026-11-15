@@ -19,7 +19,7 @@ class Membership(models.Model):
     class Role(models.TextChoices):
         EMPLOYEE = "employee", "Employee"
         ADMIN = "admin", "Administrator"
-        # Legacy values remain valid for existing local memberships.
+        # Legacy do values remain valid for existing local memberships.
         CLIENT = "client", "Client"
         ACCOUNTANT = "accountant", "Accountant"
 
