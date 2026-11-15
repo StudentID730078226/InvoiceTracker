@@ -4,13 +4,14 @@ from unittest import TestCase
 from django.conf import settings
 from extraction.layoutlmv1.application_inference import MODEL_VERSION,finish
 from extraction.layoutlmv1.runtime import select_fields
-from django.test import TestCase as DjangoTestCase, override_settings
+from django.test import TestCase as DjangoTestCase, override_settings, tag
 from unittest.mock import patch
 import tempfile
 import json
 
 def word(text,box):return {'text':text,'bbox':box,'page':0}
 
+@tag("ml")
 class LayoutLMV1IntegrationTests(TestCase):
     def test_checkpoint_loader_verifies_then_delegates_to_matching_components(self):
         import hashlib
@@ -118,6 +119,7 @@ class LayoutLMV1IntegrationTests(TestCase):
         result=select_fields([{'field':'supplier','text':'A','score':.4},{'field':'supplier','text':'B','score':.9}])
         self.assertEqual(result,{'supplier':'B'})
 
+@tag("ml")
 class WorkerContractTests(DjangoTestCase):
     def test_pending_worker_runs_v1_and_persists_validated_result(self):
         from django.contrib.auth import get_user_model

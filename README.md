@@ -27,6 +27,8 @@ Install application dependencies from `requirements.txt` when setting up a new e
 
 Current code lives in `accounts/`, `invoices/`, `templates/` and `static/`. Application tests are grouped under each application's `tests/` directory.
 
+GitHub Actions runs three checks: Python code checks, `django-tests`, and ML integration tests. The application job uses `--exclude-tag=ml`; the ML job uses `--tag=ml`. Both discover tests under `accounts` and `invoices`, so each test runs in one test job. Tag new ML test classes with `@tag("ml")` to include them in the ML job. The ML tests use mocked OCR/model loading and do not measure trained-model accuracy. The local command above still runs both suites together.
+
 Archiving previous ML material is **paused and partial**. Material already moved, including source datasets, is preserved under `archive/ml_fresh_start_2026-10-30/`. They are not used by the application. Earlier archives also remain under `archive/`.
 
 Active inference is documented in [extraction/layoutlmv1/README.md](extraction/layoutlmv1/README.md). The LayoutLMv3 README describes historical research. Database diagrams remain under `reports/current/database_diagrams/`.
