@@ -45,7 +45,7 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_ROOT = BASE_DIR / "private_media"
-# Intentionally no public media URL or media URL route.
+# Intentionally n o public media URL or media URL route.
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024
 DATA_UPLOAD_MAX_MEMORY_SIZE = 12 * 1024 * 1024
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
