@@ -16,7 +16,7 @@ def markers(text):
     if '€' in text:
         codes.add('EUR')
     if '$' in text:
-        # The existing app assumes USD. Preserve it only as an explicit,
+        # The existing app  assumes USD. Preserve it only as an explicit,
         # review-required assumption when no qualified dollar code exists.
         if not codes.intersection({'CAD', 'AUD', 'NZD', 'SGD', 'HKD'}):
             codes.add('USD')
