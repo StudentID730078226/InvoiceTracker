@@ -1,4 +1,4 @@
-// Native details keeps the mobile menu usable without using JavaScript.
+// Native details keeps the mobile menu usable without JavaScript.
 const menu = document.querySelector('.navigation-menu');
 if (menu) {
   const mobile = window.matchMedia('(max-width: 760px)');
