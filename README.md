@@ -3,7 +3,7 @@
 ## Licence
 
 This project's original code is licensed under the [MIT License](LICENSE).
-Third-party dependencies, pretrained models and datasets remain subject to their respective licences.
+Third-party dependencies, pretrained models and datasets remain subject to their respective licences. change
 
 Upload an invoice image or PDF, then request editable extraction suggestions on the confirmation page. The application now runs **LayoutLM v1** through [the active inference module](extraction/layoutlmv1/README.md). Correct or replace the suggestions and explicitly confirm before saving a draft. Manual entry remains available.
 
