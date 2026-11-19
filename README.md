@@ -1,6 +1,6 @@
 # Business invoice application
 
-Upload an invoice image or PDF, then request editable extraction suggestions on the confirmation page. The application now runs **LayoutLM v1** through [the active inference module](extraction/layoutlmv1/README.md). Correct or replace the suggestions and explicitly confirm before saving a draft. Manual entry remains available.
+Upload an invoice image or PDF, then request editable extraction suggestions on the confirmation page. The application now runs **LayoutLM v1** through [the active inference module](extraction/layoutlmv1/README.md). Correct or replace the suggestions and explicitly confirm before saving a draft. Manual entry remains available and is necessary as inference is not 100% correct.
 
 The selected checkpoint is `models/layoutlm-v1-invoice`: configuration A_baseline, seed 42, epoch 10 from the completed 1500-document study. Provenance is recorded in `extraction/layoutlmv1/model_provenance.json`. The augmented1650 experiment is separate and is not automatically promoted.
 

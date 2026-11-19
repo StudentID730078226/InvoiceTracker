@@ -1,4 +1,4 @@
 [flake8]
-# Focus on correctness and unused code; do not enforce line length or spacing.
+# Focus on correctness and unused code, and do not enforce line length or spacing.
 select = E9,F
 exclude = __pycache__
