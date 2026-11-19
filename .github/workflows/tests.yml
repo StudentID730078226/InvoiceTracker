@@ -4,7 +4,6 @@ on:
   pull_request:
   # Check every pushed commit, including the final merge commit on main.
   push:
-    branches: [ main ]
 
 permissions:
   contents: read
